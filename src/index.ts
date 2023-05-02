@@ -1,16 +1,19 @@
-import { Options } from './types'
+import { applyStyle } from './apply-style'
 import { cloneNode } from './clone-node'
 import { embedImages } from './embed-images'
-import { applyStyle } from './apply-style'
 import { embedWebFonts, getWebFontCSS } from './embed-webfonts'
 import {
+  canvasToBlob,
+  checkCanvasDimensions,
+  createImage,
   getImageSize,
   getPixelRatio,
-  createImage,
-  canvasToBlob,
   nodeToDataURL,
-  checkCanvasDimensions,
 } from './util'
+
+import { Options } from './types'
+
+export { Options }
 
 export async function toSvg<T extends HTMLElement>(
   node: T,
