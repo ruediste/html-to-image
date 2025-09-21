@@ -27,6 +27,7 @@
     "svg"
   ],
   "scripts": {
+    "start": "PORT=3001 node test/server.js",
     "lint": "eslint 'src/**/*.{js,ts}?(x)' --fix",
     "clean": "rimraf dist es lib",
     "build:esm": "tsc --module esnext --target es2017 --outDir ./es",
@@ -36,10 +37,9 @@
     "prebuild": "run-s lint clean",
     "test": "karma start",
     "test:watch": "karma start --single-run=false --auto-watch",
-    "test:debug": "karma start --browsers=Chrome --single-run=false --auto-watch --debug",
+    "test:debug": "karma start --browsers=Chrome --single-run=false --debug",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
-    "pretest": "rimraf ./test/coverage",
-    "prepare": "is-ci || husky install .husky"
+    "pretest": "rimraf ./test/coverage"
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,less,md,json}": [

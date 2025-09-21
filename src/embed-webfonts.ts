@@ -1,7 +1,7 @@
+import { fetchAsDataURL } from './dataurl'
+import { embedResources, shouldEmbed } from './embed-resources'
 import type { Options } from './types'
 import { toArray } from './util'
-import { fetchAsDataURL } from './dataurl'
-import { shouldEmbed, embedResources } from './embed-resources'
 
 interface Metadata {
   url: string
@@ -208,15 +208,17 @@ function normalizeFontFamily(font: string) {
 
 function getUsedFonts(node: HTMLElement) {
   const fonts = new Set<string>()
-  function traverse(node: HTMLElement) {
+  function traverse(node: HTMLElement | SVGElement) {
     const fontFamily =
-      node.style.fontFamily || getComputedStyle(node).fontFamily
+      node.style.getPropertyValue('font-family') ||
+      node.getAttribute('font-family') ||
+      getComputedStyle(node).getPropertyValue('font-family')
     fontFamily.split(',').forEach((font) => {
       fonts.add(normalizeFontFamily(font))
     })
 
     Array.from(node.children).forEach((child) => {
-      if (child instanceof HTMLElement) {
+      if (child instanceof HTMLElement || child instanceof SVGElement) {
         traverse(child)
       }
     })
@@ -234,7 +236,9 @@ export async function getWebFontCSS<T extends HTMLElement>(
   const cssTexts = await Promise.all(
     rules
       .filter((rule) =>
-        usedFonts.has(normalizeFontFamily(rule.style.fontFamily)),
+        usedFonts.has(
+          normalizeFontFamily(rule.style.getPropertyValue('font-family')),
+        ),
       )
       .map((rule) => {
         const baseUrl = rule.parentStyleSheet

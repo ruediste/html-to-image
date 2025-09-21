@@ -3,11 +3,11 @@
 import * as htmlToImage from '../../src'
 import { delay } from '../../src/util'
 import {
-  clean,
+  assertTextRendered,
   bootstrap,
   check,
+  clean,
   renderAndCheck,
-  assertTextRendered,
 } from './helper'
 import './setup'
 
@@ -169,6 +169,14 @@ describe('basic usage', () => {
 
   it('should render web fonts', (done) => {
     bootstrap('fonts/node.html', 'fonts/style.css')
+      .then(delay(1000))
+      .then(assertTextRendered(['apper']))
+      .then(done)
+      .catch(done)
+  })
+
+  it('should render web fonts in svg', (done) => {
+    bootstrap('fonts/node-svg.html', 'fonts/style.css')
       .then(delay(1000))
       .then(assertTextRendered(['apper']))
       .then(done)

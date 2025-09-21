@@ -103,5 +103,46 @@ describe('font embedding', () => {
         root.remove()
       }
     })
+    it('should embed font used in SVG', async () => {
+      const root = document.createElement('div')
+      document.body.append(root)
+      try {
+        root.innerHTML = `
+          <style>
+              @font-face { 
+                  font-family: 'Font 0';
+                  src: url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu72xKKTU1Kvnz.woff2');
+              }
+              @font-face { 
+                  font-family: 'Font 1';
+                  src: url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu72xKKTU1Kvnz.woff2');
+              }
+              @font-face { 
+                  font-family: 'Font 2';
+                  src: url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu72xKKTU1Kvnz.woff2');
+              }
+          </style>
+          <div>
+            <div>
+                <div>
+                    <svg>
+                      <g>
+                      <text font-family="Font 1"> Foo </text>
+                      </g>
+                    </svg>
+                </div>
+            </div>
+          </div>
+        `
+        const svg = await htmlToImage.toSvg(root)
+        const doc = await getSvgDocument(svg)
+        const [style] = Array.from(doc.getElementsByTagName('style'))
+        expect(style.textContent).toContain('Font 1')
+        expect(style.textContent).not.toContain('Font 0')
+        expect(style.textContent).not.toContain('Font 2')
+      } finally {
+        root.remove()
+      }
+    })
   })
 })
