@@ -1,3 +1,12 @@
+# [1.12.0](https://github.com/ruediste/html-to-image/compare/v1.11.14...v1.12.0) (2025-09-21)
+
+
+### Features
+
+* add 'cacheDisable' to option to set fetch cache option to 'no-cache' ([e2c006b](https://github.com/ruediste/html-to-image/commit/e2c006b7bf85be33a2318c401dd193865399ecbd))
+* handle use href attribute ([9242fa3](https://github.com/ruediste/html-to-image/commit/9242fa385aeb4b07104dc2de47f8ecb0b0a4ff41))
+* options exportable ([bfea64c](https://github.com/ruediste/html-to-image/commit/bfea64cb2e61ea1443ebd24b8218efb280dd77b2))
+
 ## [1.11.14](https://github.com/ruediste/html-to-image/compare/v1.11.13...v1.11.14) (2025-09-21)
 
 
