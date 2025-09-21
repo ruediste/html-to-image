@@ -6,9 +6,8 @@
 
 <p align="center">
 <a href="https://github.com/ruediste/html-to-image/actions/workflows/ci.yml"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/ruediste/html-to-image/ci.yml?branch=master&logo=github&style=for-the-badge"></a>
-<a href="https://app.codecov.io/gh/bubkoo/html-to-image"><img alt="coverage" src="https://img.shields.io/codecov/c/gh/bubkoo/html-to-image?logo=codecov&style=for-the-badge&token=BWweeU2uNX"></a>
-<a href="https://www.npmjs.com/package/@ruediste/html-to-image" rel="nofollow"><img alt="NPM Package" src="https://img.shields.io/npm/v/html-to-image.svg?logo=npm&style=for-the-badge" /></a>
-<a href="https://www.npmjs.com/package/@ruediste/html-to-image" rel="nofollow"><img alt="NPM Downloads" src="http://img.shields.io/npm/dm/html-to-image.svg?logo=npm&style=for-the-badge" /></a>
+<a href="https://www.npmjs.com/package/@ruediste/html-to-image" rel="nofollow"><img alt="NPM Package" src="https://img.shields.io/npm/v/@ruediste/html-to-image.svg?logo=npm&style=for-the-badge" /></a>
+<a href="https://www.npmjs.com/package/@ruediste/html-to-image" rel="nofollow"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/%40ruediste%2Fhtml-to-image"/></a>
 
 
 </p>
