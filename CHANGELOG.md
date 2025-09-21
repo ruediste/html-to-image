@@ -1,3 +1,10 @@
+## [1.11.14](https://github.com/ruediste/html-to-image/compare/v1.11.13...v1.11.14) (2025-09-21)
+
+
+### Bug Fixes
+
+* font embedding in SVG ([a2e616c](https://github.com/ruediste/html-to-image/commit/a2e616c36105b33a9d1af743f0e6bcd1c1544b99))
+
 ## [1.11.13](https://github.com/bubkoo/html-to-image/compare/v1.11.12...v1.11.13) (2025-02-14)
 
 
