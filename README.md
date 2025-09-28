@@ -21,7 +21,7 @@
 ## Install
 
 ```shell
-npm install --save html-to-image
+npm install --save @ruediste/html-to-image
 ```
 
 ## Usage
