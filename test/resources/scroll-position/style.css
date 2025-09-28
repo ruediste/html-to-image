@@ -1,0 +1,14 @@
+#scrolled {
+  width: 100px;
+  height: 100px;
+  overflow: auto;
+  border: black solid 1px;
+}
+
+#scrolled div {
+  width: 120px;
+  height: 120px;
+  background-color: blue;
+  margin: 2px;
+  border: red solid 1px;
+}

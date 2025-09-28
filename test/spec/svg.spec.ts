@@ -1,8 +1,8 @@
 /* eslint-disable promise/no-callback-in-promise */
 
-import '../spec/setup'
 import { toSvg } from '../../src'
-import { bootstrap, renderAndCheck, getSvgDocument } from '../spec/helper'
+import { bootstrap, getSvgDocument, renderAndCheck } from '../spec/helper'
+import '../spec/setup'
 
 describe('work with svg element', () => {
   it('should render nested svg with broken namespace', (done) => {

@@ -4,15 +4,18 @@ import { Options } from '../../src/types'
 import { getPixelRatio } from '../../src/util'
 
 export function getCaptureNode() {
-  return document.getElementById('dom-node') as HTMLDivElement
+  return document.getElementById('capture-node') as HTMLDivElement
 }
 
-export function getReferenceImage() {
-  return document.getElementById('ref-image') as HTMLImageElement
-}
-
-export function getCanvasNode() {
+export function getCapturedImageCanvasNode() {
   return document.getElementById('canvas') as HTMLCanvasElement
+}
+export function getHelperCanvasNode() {
+  return document.getElementById('helper-canvas') as HTMLCanvasElement
+}
+
+export function getReferenceImageNode() {
+  return document.getElementById('ref-image') as HTMLImageElement
 }
 
 export function getStyleNode() {
@@ -56,7 +59,7 @@ export async function bootstrap(
 
   if (refImageUrl) {
     const url = await fetchFile(refImageUrl)
-    getReferenceImage().setAttribute('src', url)
+    getReferenceImageNode().setAttribute('src', url)
   }
 
   return captureNode
@@ -68,8 +71,7 @@ async function fetchFile(fileName: string) {
   return res.text()
 }
 
-function makeImage(src: string) {
-  // console.log(src)
+function createImageElement(src: string) {
   return new Promise<HTMLImageElement>((resolve) => {
     const image = new Image()
     image.onload = () => resolve(image)
@@ -77,14 +79,14 @@ function makeImage(src: string) {
   })
 }
 
-function makeCanvas(
+function drawImageToCanvas(
+  canvas: HTMLCanvasElement,
   img: HTMLImageElement,
   size?: {
     width?: number
     height?: number
   },
 ) {
-  const canvas = getCanvasNode()
   const context = canvas.getContext('2d')!
 
   const width = (size && size.width) || img.width
@@ -100,61 +102,84 @@ function makeCanvas(
   return { canvas, context, width, height }
 }
 
-function drawImg(
+function imageToImageData(
   img: HTMLImageElement,
   size?: {
     width?: number
     height?: number
   },
 ) {
-  const { context, width, height } = makeCanvas(img, size)
+  const { context, width, height } = drawImageToCanvas(
+    getHelperCanvasNode(),
+    img,
+    size,
+  )
+
   return context.getImageData(0, 0, width, height)
 }
 
-export async function drawDataUrl(
+export async function dataUrlToImageData(
   dataUrl: string,
   size?: {
     width?: number
     height?: number
   },
-) {
-  return Promise.resolve(dataUrl)
-    .then(makeImage)
-    .then((image) => drawImg(image, size))
+): Promise<ImageData> {
+  const image = await createImageElement(dataUrl)
+  return imageToImageData(image, size)
 }
 
-export async function check(dataUrl: string) {
-  return Promise.resolve(dataUrl)
-    .then(drawDataUrl)
-    .then((imgData) => compareToRefImage(imgData))
+export async function check(actualImageDataUrl: string) {
+  drawImageToCanvas(
+    getCapturedImageCanvasNode(),
+    await createImageElement(actualImageDataUrl),
+  )
+  const imgData = await dataUrlToImageData(actualImageDataUrl)
+  await compareToRefImage(imgData)
+}
+
+export async function toDataUrl(node: HTMLDivElement = getCaptureNode()) {
+  const png = await toPng(node)
+  const image = await createImageElement(png)
+  const { canvas } = await drawImageToCanvas(getHelperCanvasNode(), image)
+  return canvas.toDataURL()
 }
 
 export async function logDataUrl(node: HTMLDivElement = getCaptureNode()) {
-  return toPng(node)
-    .then(makeImage)
-    .then(makeCanvas)
-    .then(({ canvas }) => {
-      // eslint-disable-next-line
-      console.log(canvas.toDataURL())
-      return node
-    })
+  // eslint-disable-next-line
+  console.log(toDataUrl(node))
 }
 
 export async function renderAndCheck(
   node: HTMLDivElement = getCaptureNode(),
   options: Options = {},
 ) {
-  return toPng(node, options).then(check)
+  const rendered = await toPng(node, options)
+  try {
+    await check(rendered)
+  } catch (e) {
+    // eslint-disable-next-line no-debugger
+    debugger
+    // eslint-disable-next-line no-console
+    throw new Error(`actual image: ${rendered}\n${e}`)
+  }
 }
 
 export function compareToRefImage(sourceData: ImageData, threshold = 0.1) {
-  const ref = getReferenceImage()
-  const refData = drawImg(ref)
-  expect(
-    pixelmatch(sourceData.data, refData.data, null, ref.width, ref.height, {
+  const ref = getReferenceImageNode()
+  const refData = imageToImageData(ref)
+
+  const result = pixelmatch(
+    sourceData.data,
+    refData.data,
+    null,
+    ref.width,
+    ref.height,
+    {
       threshold,
-    }),
-  ).toBeLessThan(100)
+    },
+  )
+  expect(result).toBeLessThan(100)
 }
 
 export async function getSvgDocument(dataUrl: string): Promise<XMLDocument> {
@@ -177,8 +202,8 @@ export function assertTextRendered(lines: string[], options?: Options) {
 
 export async function recognizeImage(node: HTMLDivElement, options?: Options) {
   return toPng(node, options)
-    .then(drawDataUrl)
-    .then(() => recognize(getCanvasNode().toDataURL()))
+    .then(dataUrlToImageData)
+    .then(() => recognize(getHelperCanvasNode().toDataURL()))
 }
 
 // see: https://ocr.space/OCRAPI

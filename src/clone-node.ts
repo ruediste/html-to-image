@@ -1,13 +1,13 @@
-import type { Options } from './types'
 import { clonePseudoElements } from './clone-pseudos'
+import { resourceToDataURL } from './dataurl'
+import { getMimeType } from './mimes'
+import type { Options } from './types'
 import {
   createImage,
-  toArray,
-  isInstanceOfElement,
   getStyleProperties,
+  isInstanceOfElement,
+  toArray,
 } from './util'
-import { getMimeType } from './mimes'
-import { resourceToDataURL } from './dataurl'
 
 async function cloneCanvasElement(canvas: HTMLCanvasElement) {
   const dataURL = canvas.toDataURL()
@@ -79,9 +79,9 @@ async function cloneChildren<T extends HTMLElement>(
   nativeNode: T,
   clonedNode: T,
   options: Options,
-): Promise<T> {
+): Promise<void> {
   if (isSVGElement(clonedNode)) {
-    return clonedNode
+    return
   }
 
   let children: T[] = []
@@ -101,7 +101,7 @@ async function cloneChildren<T extends HTMLElement>(
     children.length === 0 ||
     isInstanceOfElement(nativeNode, HTMLVideoElement)
   ) {
-    return clonedNode
+    return
   }
 
   await children.reduce(
@@ -115,8 +115,6 @@ async function cloneChildren<T extends HTMLElement>(
         }),
     Promise.resolve(),
   )
-
-  return clonedNode
 }
 
 function cloneCSSStyle<T extends HTMLElement>(
@@ -190,15 +188,13 @@ function decorate<T extends HTMLElement>(
   nativeNode: T,
   clonedNode: T,
   options: Options,
-): T {
+) {
   if (isInstanceOfElement(clonedNode, Element)) {
     cloneCSSStyle(nativeNode, clonedNode, options)
     clonePseudoElements(nativeNode, clonedNode, options)
     cloneInputValue(nativeNode, clonedNode)
     cloneSelectValue(nativeNode, clonedNode)
   }
-
-  return clonedNode
 }
 
 async function ensureSVGSymbols<T extends HTMLElement>(
@@ -207,7 +203,7 @@ async function ensureSVGSymbols<T extends HTMLElement>(
 ) {
   const uses = clone.querySelectorAll ? clone.querySelectorAll('use') : []
   if (uses.length === 0) {
-    return clone
+    return
   }
 
   const processedDefs: { [key: string]: HTMLElement } = {}
@@ -244,8 +240,6 @@ async function ensureSVGSymbols<T extends HTMLElement>(
 
     clone.appendChild(svg)
   }
-
-  return clone
 }
 
 export async function cloneNode<T extends HTMLElement>(
@@ -257,9 +251,10 @@ export async function cloneNode<T extends HTMLElement>(
     return null
   }
 
-  return Promise.resolve(node)
-    .then((clonedNode) => cloneSingleNode(clonedNode, options) as Promise<T>)
-    .then((clonedNode) => cloneChildren(node, clonedNode, options))
-    .then((clonedNode) => decorate(node, clonedNode, options))
-    .then((clonedNode) => ensureSVGSymbols(clonedNode, options))
+  const clonedNode = (await cloneSingleNode(node, options)) as T
+  await cloneChildren(node, clonedNode, options)
+  await decorate(node, clonedNode, options)
+  await ensureSVGSymbols(clonedNode, options)
+
+  return clonedNode
 }

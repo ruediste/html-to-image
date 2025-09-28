@@ -130,12 +130,26 @@ describe('basic usage', () => {
       .catch(done)
   })
 
-  it('should render whole node when its scrolled', (done) => {
-    bootstrap('scroll/node.html', 'scroll/style.css', 'scroll/image')
-      .then((node) => node.querySelector('#scrolled') as HTMLDivElement)
-      .then(renderAndCheck)
-      .then(done)
-      .catch(done)
+  it('should render whole node when its scrolled', async () => {
+    const node = await bootstrap(
+      'scroll/node.html',
+      'scroll/style.css',
+      'scroll/image',
+    )
+    const scrolledNode = node.querySelector('#scrolled') as HTMLDivElement
+    await renderAndCheck(scrolledNode)
+  })
+
+  it('it shoud not preserve the scroll position', async () => {
+    // this documents the current behavior. It would be nice to preserve the scroll position
+    const root = await bootstrap(
+      'scroll-position/node.html',
+      'scroll-position/style.css',
+      'scroll-position/image',
+    )
+    const node = root.querySelector('#scrolled') as HTMLDivElement
+    node.scrollTop = node.scrollHeight
+    await renderAndCheck(node)
   })
 
   it('should render with external stylesheet', (done) => {

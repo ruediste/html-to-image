@@ -1,16 +1,15 @@
 /* eslint-disable promise/no-callback-in-promise */
 
-import './setup'
+import { toPng, toSvg } from '../../src'
 import {
+  assertTextRendered,
   bootstrap,
   check,
-  drawDataUrl,
-  // renderAndCheck,
-  getSvgDocument,
   compareToRefImage,
-  assertTextRendered,
+  dataUrlToImageData,
+  getSvgDocument,
 } from './helper'
-import { toPng, toSvg } from '../../src'
+import './setup'
 
 describe('work with options', () => {
   it('should apply width and height options to node copy being rendered', (done) => {
@@ -25,7 +24,9 @@ describe('work with options', () => {
           height: 200,
         }),
       )
-      .then((dataUrl) => drawDataUrl(dataUrl, { width: 200, height: 200 }))
+      .then((dataUrl) =>
+        dataUrlToImageData(dataUrl, { width: 200, height: 200 }),
+      )
       .then(compareToRefImage)
       .then(done)
       .catch(done)
@@ -91,7 +92,9 @@ describe('work with options', () => {
           },
         })
       })
-      .then((dataUrl) => drawDataUrl(dataUrl, { width: 200, height: 200 }))
+      .then((dataUrl) =>
+        dataUrlToImageData(dataUrl, { width: 200, height: 200 }),
+      )
       .then(compareToRefImage)
       .then(done)
       .catch(done)

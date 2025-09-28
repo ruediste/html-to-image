@@ -81,22 +81,12 @@ export function getStyleProperties(options: Options = {}): string[] {
   return styleProps
 }
 
-function px(node: HTMLElement, styleProperty: string) {
-  const win = node.ownerDocument.defaultView || window
-  const val = win.getComputedStyle(node).getPropertyValue(styleProperty)
-  return val ? parseFloat(val.replace('px', '')) : 0
-}
-
 function getNodeWidth(node: HTMLElement) {
-  const leftBorder = px(node, 'border-left-width')
-  const rightBorder = px(node, 'border-right-width')
-  return node.clientWidth + leftBorder + rightBorder
+  return node.offsetWidth
 }
 
 function getNodeHeight(node: HTMLElement) {
-  const topBorder = px(node, 'border-top-width')
-  const bottomBorder = px(node, 'border-bottom-width')
-  return node.clientHeight + topBorder + bottomBorder
+  return node.offsetHeight
 }
 
 export function getImageSize(targetNode: HTMLElement, options: Options = {}) {

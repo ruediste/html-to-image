@@ -1,7 +1,7 @@
 # Contribution Guide
 
-If you have any comment or advice, please report your [issue](https://github.com/bubkoo/html-to-image/issues),
-or make any change as you wish and submit a [PR](https://github.com/bubkoo/html-to-image/pulls).
+If you have any comment or advice, please report your [issue](https://github.com/ruediste/html-to-image/issues),
+or make any change as you wish and submit a [PR](https://github.com/ruediste/html-to-image/pulls).
 
 ## Reporting New Issues
 
@@ -108,16 +108,10 @@ We use semantic versioning in release process based on [semver](https://semver.o
 - Just checkout develop branch from `master`
 - All new features will be added into `master` or `next` branch as well as all bug-fix except security issues. In such way, we can motivate developers to update to the latest stable version.
 
-### Release Strategy
+## Testing
 
-In the release of every stable version, there will be a PM who has the following responsibilities in different stages of the release.
+The tests use Karma to execute the tests in a browser. Use `npm test` to run the tests once and `npm test:watch` to run them continously.
 
-#### Preparation
+For debugging, run `npm test:debug`. This will lauch a browser window. Next, run `npx karma run` to trigger a test run. Replace the `it` in any text with `fit` (for focused test), to only run this test with the next `npx karma run`. If you open the developer tools, the test will stop in the debugger when an error occurs, allowing you to inspect the DOM.
 
-- Set up milestone. Confirm that request is related to milestone.
-
-#### Before Release
-
-- Confirm that performance test is passed and all issues in current Milestone are either closed or can be delayed to later versions.
-- Open a new [Release Proposal MR](https://github.com/nodejs/node/pull/4181), and write `History` as [node CHANGELOG](https://github.com/nodejs/node/blob/master/CHANGELOG.md). Don't forget to correct content in documentation which is related to the releasing version.
-- Nominate PM for next stable version.
+The page you see is defined in `test/resources/page.html`.
