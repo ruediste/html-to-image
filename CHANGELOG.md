@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/ruediste/html-to-image/compare/v1.13.0...v1.13.1) (2025-09-29)
+
+
+### Bug Fixes
+
+* undo change to node measurement ([75069fb](https://github.com/ruediste/html-to-image/commit/75069fb42d0cf5a98d11f5003056eb47ca0b1175))
+
 # [1.13.0](https://github.com/ruediste/html-to-image/compare/v1.12.0...v1.13.0) (2025-09-28)
 
 
