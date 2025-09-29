@@ -140,7 +140,7 @@ describe('basic usage', () => {
     await renderAndCheck(scrolledNode)
   })
 
-  it('it shoud not preserve the scroll position', async () => {
+  it('it should not preserve the scroll position', async () => {
     // this documents the current behavior. It would be nice to preserve the scroll position
     const root = await bootstrap(
       'scroll-position/node.html',
