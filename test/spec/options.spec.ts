@@ -1,14 +1,7 @@
 /* eslint-disable promise/no-callback-in-promise */
 
 import { toPng, toSvg } from '../../src'
-import {
-  assertTextRendered,
-  bootstrap,
-  check,
-  compareToRefImage,
-  dataUrlToImageData,
-  getSvgDocument,
-} from './helper'
+import { assertTextRendered, bootstrap, check, getSvgDocument } from './helper'
 import './setup'
 
 describe('work with options', () => {
@@ -24,10 +17,7 @@ describe('work with options', () => {
           height: 200,
         }),
       )
-      .then((dataUrl) =>
-        dataUrlToImageData(dataUrl, { width: 200, height: 200 }),
-      )
-      .then(compareToRefImage)
+      .then((dataUrl) => check(dataUrl, { width: 200, height: 200 }))
       .then(done)
       .catch(done)
   })
@@ -92,10 +82,7 @@ describe('work with options', () => {
           },
         })
       })
-      .then((dataUrl) =>
-        dataUrlToImageData(dataUrl, { width: 200, height: 200 }),
-      )
-      .then(compareToRefImage)
+      .then((dataUrl) => check(dataUrl, { width: 200, height: 200 }))
       .then(done)
       .catch(done)
   })

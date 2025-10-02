@@ -55,6 +55,12 @@ export function delay<T>(ms: number) {
     })
 }
 
+export function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(null), ms)
+  })
+}
+
 export function toArray<T>(arrayLike: any): T[] {
   const arr: T[] = []
 

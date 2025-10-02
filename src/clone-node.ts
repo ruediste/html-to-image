@@ -36,13 +36,17 @@ async function cloneVideoElement(video: HTMLVideoElement, options: Options) {
 
 async function cloneIFrameElement(iframe: HTMLIFrameElement, options: Options) {
   try {
+    // replace the iframe element with a div, to get a target for styling
+    const wrapperDiv = document.createElement('div')
     if (iframe?.contentDocument?.body) {
-      return (await cloneNode(
+      const clonedBody = (await cloneNode(
         iframe.contentDocument.body,
         options,
         true,
       )) as HTMLBodyElement
+      wrapperDiv.appendChild(clonedBody)
     }
+    return wrapperDiv
   } catch {
     // Failed to clone iframe
   }
@@ -88,11 +92,6 @@ async function cloneChildren<T extends HTMLElement>(
 
   if (isSlotElement(nativeNode) && nativeNode.assignedNodes) {
     children = toArray<T>(nativeNode.assignedNodes())
-  } else if (
-    isInstanceOfElement(nativeNode, HTMLIFrameElement) &&
-    nativeNode.contentDocument?.body
-  ) {
-    children = toArray<T>(nativeNode.contentDocument.body.childNodes)
   } else {
     children = toArray<T>((nativeNode.shadowRoot ?? nativeNode).childNodes)
   }
@@ -188,7 +187,7 @@ function decorate<T extends HTMLElement>(
   nativeNode: T,
   clonedNode: T,
   options: Options,
-) {
+): void {
   if (isInstanceOfElement(clonedNode, Element)) {
     cloneCSSStyle(nativeNode, clonedNode, options)
     clonePseudoElements(nativeNode, clonedNode, options)

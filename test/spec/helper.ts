@@ -129,13 +129,37 @@ export async function dataUrlToImageData(
   return imageToImageData(image, size)
 }
 
-export async function check(actualImageDataUrl: string) {
+export async function check(
+  actualImageDataUrl: string,
+  size?: {
+    width?: number
+    height?: number
+  },
+) {
   drawImageToCanvas(
     getCapturedImageCanvasNode(),
     await createImageElement(actualImageDataUrl),
   )
-  const imgData = await dataUrlToImageData(actualImageDataUrl)
-  await compareToRefImage(imgData)
+  const actualImageData = await dataUrlToImageData(actualImageDataUrl, size)
+  const ref = getReferenceImageNode()
+  const refData = imageToImageData(ref)
+
+  const result = pixelmatch(
+    actualImageData.data,
+    refData.data,
+    null,
+    ref.width,
+    ref.height,
+    {
+      threshold: 0.1,
+    },
+  )
+  if (result >= 100) {
+    debugger
+  }
+  expect(result)
+    .withContext(`actual image: ${actualImageDataUrl}`)
+    .toBeLessThan(100)
 }
 
 export async function toDataUrl(node: HTMLDivElement = getCaptureNode()) {
@@ -163,23 +187,6 @@ export async function renderAndCheck(
     // eslint-disable-next-line no-console
     throw new Error(`actual image: ${rendered}\n${e}`)
   }
-}
-
-export function compareToRefImage(sourceData: ImageData, threshold = 0.1) {
-  const ref = getReferenceImageNode()
-  const refData = imageToImageData(ref)
-
-  const result = pixelmatch(
-    sourceData.data,
-    refData.data,
-    null,
-    ref.width,
-    ref.height,
-    {
-      threshold,
-    },
-  )
-  expect(result).toBeLessThan(100)
 }
 
 export async function getSvgDocument(dataUrl: string): Promise<XMLDocument> {
