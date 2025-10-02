@@ -1,3 +1,10 @@
+## [1.13.2](https://github.com/ruediste/html-to-image/compare/v1.13.1...v1.13.2) (2025-10-02)
+
+
+### Bug Fixes
+
+* prevent duplicate child cloning of iframe content ([4276fa1](https://github.com/ruediste/html-to-image/commit/4276fa184ec946fab23f77b0f9f3ca4ed1680afd))
+
 ## [1.13.1](https://github.com/ruediste/html-to-image/compare/v1.13.0...v1.13.1) (2025-09-29)
 
 
