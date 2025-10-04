@@ -1,9 +1,10 @@
 import { clonePseudoElements } from './clone-pseudos'
 import { resourceToDataURL } from './dataurl'
 import { getMimeType } from './mimes'
-import type { Options } from './types'
+import type { CloneableElement, Options } from './types'
 import {
   createImage,
+  findDirectlyMatchingCssRules,
   getStyleProperties,
   isInstanceOfElement,
   toArray,
@@ -54,10 +55,10 @@ async function cloneIFrameElement(iframe: HTMLIFrameElement, options: Options) {
   return iframe.cloneNode(false) as HTMLIFrameElement
 }
 
-async function cloneSingleNode<T extends HTMLElement>(
+async function cloneSingleNode<T extends CloneableElement>(
   node: T,
   options: Options,
-): Promise<HTMLElement> {
+): Promise<CloneableElement> {
   if (isInstanceOfElement(node, HTMLCanvasElement)) {
     return cloneCanvasElement(node)
   }
@@ -70,25 +71,18 @@ async function cloneSingleNode<T extends HTMLElement>(
     return cloneIFrameElement(node, options)
   }
 
-  return node.cloneNode(isSVGElement(node)) as T
+  return node.cloneNode() as T
 }
 
-const isSlotElement = (node: HTMLElement): node is HTMLSlotElement =>
+const isSlotElement = (node: CloneableElement): node is HTMLSlotElement =>
   node.tagName != null && node.tagName.toUpperCase() === 'SLOT'
 
-const isSVGElement = (node: HTMLElement): node is HTMLSlotElement =>
-  node.tagName != null && node.tagName.toUpperCase() === 'SVG'
-
-async function cloneChildren<T extends HTMLElement>(
+async function cloneChildren<T extends CloneableElement>(
   nativeNode: T,
   clonedNode: T,
   options: Options,
 ): Promise<void> {
-  if (isSVGElement(clonedNode)) {
-    return
-  }
-
-  let children: T[] = []
+  let children: CloneableElement[] = []
 
   if (isSlotElement(nativeNode) && nativeNode.assignedNodes) {
     children = toArray<T>(nativeNode.assignedNodes())
@@ -103,22 +97,17 @@ async function cloneChildren<T extends HTMLElement>(
     return
   }
 
-  await children.reduce(
-    (deferred, child) =>
-      deferred
-        .then(() => cloneNode(child, options))
-        .then((clonedChild: HTMLElement | null) => {
-          if (clonedChild) {
-            clonedNode.appendChild(clonedChild)
-          }
-        }),
-    Promise.resolve(),
-  )
+  // eslint-disable-next-line no-restricted-syntax
+  for (const child of children) {
+    if (child instanceof HTMLStyleElement) continue
+    const clonedChild = await cloneNode(child, options)
+    if (clonedChild) clonedNode.appendChild(clonedChild)
+  }
 }
 
-function cloneCSSStyle<T extends HTMLElement>(
-  nativeNode: T,
-  clonedNode: T,
+function cloneCSSStyle(
+  nativeNode: CloneableElement,
+  clonedNode: CloneableElement,
   options: Options,
 ) {
   const targetStyle = clonedNode.style
@@ -132,6 +121,21 @@ function cloneCSSStyle<T extends HTMLElement>(
     targetStyle.transformOrigin = sourceStyle.transformOrigin
   } else {
     getStyleProperties(options).forEach((name) => {
+      if (name === 'font-family') {
+        const fontFamilyAttr = nativeNode.getAttribute('font-family')
+        if (fontFamilyAttr != null) {
+          // for svg texts, the font-family attribute is used if there is no
+          // matching css rule. Therefore, do not copy the computed CSS value, as it
+          // would override the fond-family attribute (which is alredy copied somewhere else)
+          if (
+            !findDirectlyMatchingCssRules(nativeNode).some(
+              (x) => x.style.fontFamily !== '',
+            )
+          )
+            return
+        }
+      }
+
       let value = sourceStyle.getPropertyValue(name)
       if (name === 'font-size' && value.endsWith('px')) {
         const reducedFont =
@@ -160,7 +164,7 @@ function cloneCSSStyle<T extends HTMLElement>(
   }
 }
 
-function cloneInputValue<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
+function cloneInputValue(nativeNode: Element, clonedNode: Element) {
   if (isInstanceOfElement(nativeNode, HTMLTextAreaElement)) {
     clonedNode.innerHTML = nativeNode.value
   }
@@ -170,7 +174,7 @@ function cloneInputValue<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
   }
 }
 
-function cloneSelectValue<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
+function cloneSelectValue(nativeNode: Element, clonedNode: Element) {
   if (isInstanceOfElement(nativeNode, HTMLSelectElement)) {
     const clonedSelect = clonedNode as any as HTMLSelectElement
     const selectedOption = Array.from(clonedSelect.children).find(
@@ -183,23 +187,23 @@ function cloneSelectValue<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
   }
 }
 
-function decorate<T extends HTMLElement>(
+function decorate<T extends CloneableElement>(
   nativeNode: T,
   clonedNode: T,
   options: Options,
 ): void {
-  if (isInstanceOfElement(clonedNode, Element)) {
-    cloneCSSStyle(nativeNode, clonedNode, options)
+  cloneCSSStyle(nativeNode, clonedNode, options)
+  if (
+    isInstanceOfElement(clonedNode, HTMLElement) &&
+    isInstanceOfElement(nativeNode, HTMLElement)
+  ) {
     clonePseudoElements(nativeNode, clonedNode, options)
     cloneInputValue(nativeNode, clonedNode)
     cloneSelectValue(nativeNode, clonedNode)
   }
 }
 
-async function ensureSVGSymbols<T extends HTMLElement>(
-  clone: T,
-  options: Options,
-) {
+async function ensureSVGSymbols(clone: CloneableElement, options: Options) {
   const uses = clone.querySelectorAll ? clone.querySelectorAll('use') : []
   if (uses.length === 0) {
     return
@@ -241,7 +245,7 @@ async function ensureSVGSymbols<T extends HTMLElement>(
   }
 }
 
-export async function cloneNode<T extends HTMLElement>(
+export async function cloneNode<T extends CloneableElement>(
   node: T,
   options: Options,
   isRoot?: boolean,

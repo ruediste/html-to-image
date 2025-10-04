@@ -19,11 +19,13 @@ describe('work with svg element', () => {
       .catch(done)
   })
 
-  it('should render svg `<rect>` with applied css styles', (done) => {
-    bootstrap('svg-color/node.html', 'svg-color/style.css', 'svg-color/image')
-      .then(renderAndCheck)
-      .then(done)
-      .catch(done)
+  it('should render svg `<rect>` with applied css styles', async () => {
+    await bootstrap(
+      'svg-color/node.html',
+      'svg-color/style.css',
+      'svg-color/image',
+    )
+    await renderAndCheck()
   })
 
   it('should include a viewBox attribute', (done) => {
@@ -47,14 +49,30 @@ describe('work with svg element', () => {
       .catch(done)
   })
 
-  it('should render SVG use tags', function (done) {
-    bootstrap(
+  it('should render SVG use tags', async () => {
+    await bootstrap(
       'svg-use-tag/node.html',
       'svg-use-tag/style.css',
       'svg-use-tag/image',
     )
-      .then(renderAndCheck)
-      .then(done)
-      .catch(done)
+    await renderAndCheck()
+  })
+
+  it('should support foreign object inline and stylesheet styling', async () => {
+    await bootstrap(
+      'svg-foreign-object-styling/node.html',
+      'svg-foreign-object-styling/style.css',
+      'svg-foreign-object-styling/image',
+    )
+    await renderAndCheck()
+  })
+
+  it('should handle font-family correctly', async () => {
+    await bootstrap(
+      'svg-text-font-family/node.html',
+      'svg-text-font-family/style.css',
+      'svg-text-font-family/image',
+    )
+    await renderAndCheck()
   })
 })

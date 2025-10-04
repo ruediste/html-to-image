@@ -1,0 +1,12 @@
+#capture-node {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+
+span.styled {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background: green;
+}

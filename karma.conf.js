@@ -15,6 +15,11 @@ module.exports = function (config) {
         included: false,
         served: true,
       },
+       {
+        pattern: 'test/fonts/**/*',
+        included: false,
+        served: true,
+      },
       {
         pattern: 'node_modules/@fortawesome/fontawesome-free/css/*.*',
         included: false,

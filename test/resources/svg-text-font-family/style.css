@@ -1,0 +1,20 @@
+#capture-node {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+
+@font-face {
+  font-family: 'MyRoboto';
+  src: url('/base/test/fonts/roboto/Roboto-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'MyGravitas';
+  src: url('/base/test/fonts/gravitas/GravitasOne-Regular.ttf')
+    format('truetype');
+}
+
+.styled {
+  font-family: MyRoboto;
+}

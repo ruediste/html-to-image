@@ -249,10 +249,8 @@ export async function nodeToDataURL(
   return svgToDataURL(svg)
 }
 
-export const isInstanceOfElement = <
-  T extends typeof Element | typeof HTMLElement | typeof SVGImageElement,
->(
-  node: Element | HTMLElement | SVGImageElement,
+export const isInstanceOfElement = <T extends typeof Element>(
+  node: Element,
   instance: T,
 ): node is T['prototype'] => {
   if (node instanceof instance) return true
@@ -265,4 +263,41 @@ export const isInstanceOfElement = <
     nodePrototype.constructor.name === instance.name ||
     isInstanceOfElement(nodePrototype, instance)
   )
+}
+
+function forEachInList<T>(
+  list:
+    | {
+        length: number
+        item: (idx: number) => T
+      }
+    | null
+    | undefined,
+  action: (item: T, idx: number) => void,
+) {
+  if (list == null) return
+  for (let i = 0; i < list.length; i++) {
+    action(list.item(i), i)
+  }
+}
+
+export function findDirectlyMatchingCssRules(el: Element) {
+  const ret: CSSStyleRule[] = []
+  forEachInList(el.ownerDocument.styleSheets, (sheet) => {
+    forEachInList(sheet?.cssRules, (rule) => {
+      if (
+        rule instanceof CSSMediaRule &&
+        window.matchMedia(rule.conditionText)
+      ) {
+        forEachInList(rule.cssRules, (x) => {
+          if (x instanceof CSSStyleRule && el.matches(x.selectorText))
+            ret.push(x)
+        })
+        return
+      }
+      if (rule instanceof CSSStyleRule && el.matches(rule.selectorText))
+        ret.push(rule)
+    })
+  })
+  return ret
 }
