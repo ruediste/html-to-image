@@ -1,3 +1,10 @@
+## [1.13.3](https://github.com/ruediste/html-to-image/compare/v1.13.2...v1.13.3) (2025-10-04)
+
+
+### Bug Fixes
+
+* proper support for svg foreign object styling ([1c373ad](https://github.com/ruediste/html-to-image/commit/1c373adf18552c001693ef2db3932b52bd9e3ec3))
+
 ## [1.13.2](https://github.com/ruediste/html-to-image/compare/v1.13.1...v1.13.2) (2025-10-02)
 
 
