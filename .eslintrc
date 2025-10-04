@@ -1,3 +1,7 @@
 {
-  "extends": "@bubkoo/eslint-config"
+  "extends": "@bubkoo/eslint-config",
+  "rules": {
+    "no-await-in-loop":"off",
+    "no-restricted-syntax":"off"
+  }
 }

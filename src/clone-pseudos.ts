@@ -1,5 +1,5 @@
 import type { Options } from './types'
-import { uuid, getStyleProperties } from './util'
+import { getStyleProperties, uuid } from './util'
 
 type Pseudo = ':before' | ':after'
 
@@ -33,9 +33,9 @@ function getPseudoElementStyle(
   return document.createTextNode(`${selector}{${cssText}}`)
 }
 
-function clonePseudoElement<T extends HTMLElement>(
-  nativeNode: T,
-  clonedNode: T,
+function clonePseudoElement(
+  nativeNode: HTMLElement,
+  clonedNode: HTMLElement,
   pseudo: Pseudo,
   options: Options,
 ) {
@@ -59,9 +59,9 @@ function clonePseudoElement<T extends HTMLElement>(
   clonedNode.appendChild(styleElement)
 }
 
-export function clonePseudoElements<T extends HTMLElement>(
-  nativeNode: T,
-  clonedNode: T,
+export function clonePseudoElements(
+  nativeNode: HTMLElement,
+  clonedNode: HTMLElement,
   options: Options,
 ) {
   clonePseudoElement(nativeNode, clonedNode, ':before', options)

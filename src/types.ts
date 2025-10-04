@@ -1,3 +1,5 @@
+export type CloneableElement = HTMLElement | SVGElement
+
 export interface Options {
   /**
    * Width in pixels to be applied to node before rendering.
@@ -34,7 +36,7 @@ export interface Options {
    * node should be included in the output. Excluding node means excluding
    * it's children as well.
    */
-  filter?: (domNode: HTMLElement) => boolean
+  filter?: (domNode: CloneableElement) => boolean
   /**
    * A number between `0` and `1` indicating image quality (e.g. 0.92 => 92%)
    * of the JPEG image.
