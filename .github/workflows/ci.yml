@@ -5,10 +5,7 @@ on:
   push:
     branches:
       - master
-      - next
-      - next-major
-      - alpha
-      - beta
+      - develop
 jobs:
   ci:
     runs-on: ubuntu-latest
