@@ -1,3 +1,11 @@
+# [1.14.0](https://github.com/ruediste/html-to-image/compare/v1.13.3...v1.14.0) (2025-10-17)
+
+
+### Features
+
+* Add separate RequestInit for web fonts ([d4c1369](https://github.com/ruediste/html-to-image/commit/d4c13691d186e4922ff0d02766b6431771e8aea1))
+* keep video aspect ratio ([b77f6b3](https://github.com/ruediste/html-to-image/commit/b77f6b3712f40ffe7d5d4e5fa3c01eaa359a6e19))
+
 ## [1.13.3](https://github.com/ruediste/html-to-image/compare/v1.13.2...v1.13.3) (2025-10-04)
 
 
