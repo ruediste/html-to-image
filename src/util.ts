@@ -1,4 +1,4 @@
-import type { Options } from './types'
+import type { FetchRequestInitFactoryInfo, Options } from './types'
 
 export function resolveUrl(url: string, baseUrl: string | null): string {
   // url is absolute already
@@ -300,4 +300,15 @@ export function findDirectlyMatchingCssRules(el: Element) {
     })
   })
   return ret
+}
+
+export function getRequestInit(
+  url: string,
+  options: Options,
+  info: FetchRequestInitFactoryInfo,
+): RequestInit | undefined {
+  if (typeof options.fetchRequestInit === 'function') {
+    return options.fetchRequestInit(url, info)
+  }
+  return options.fetchRequestInit
 }

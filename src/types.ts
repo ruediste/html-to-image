@@ -102,17 +102,16 @@ export interface Options {
    *the second parameter of  window.fetch (Promise<Response> fetch(input[, init]))
    *
    */
-  fetchRequestInit?: RequestInit
-
-  /**
-   *
-   * The second parameter of  window.fetch (Promise<Response> fetch(input[, init])) for web font requests.
-   * If not specified, fetchRequestInit is used.
-   */
-  fetchFontRequestInit?: RequestInit
+  fetchRequestInit?:
+    | RequestInit
+    | ((url: string, info: FetchRequestInitFactoryInfo) => RequestInit)
 
   /**
    * An event handler for the error event when any image in html has problem with loading.
    */
   onImageErrorHandler?: OnErrorEventHandler
+}
+
+export interface FetchRequestInitFactoryInfo {
+  isFontRequest: boolean
 }

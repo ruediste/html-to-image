@@ -1,6 +1,7 @@
 /* eslint-disable promise/no-callback-in-promise */
 
 import { toPng, toSvg } from '../../src'
+import { getRequestInit } from '../../src/util'
 import { assertTextRendered, bootstrap, check, getSvgDocument } from './helper'
 import './setup'
 
@@ -174,5 +175,27 @@ describe('work with options', () => {
       .then(assertTextRendered(['PNG', 'JPG'], { cacheBust: true }))
       .then(done)
       .catch(done)
+  })
+
+  it('should support fetchRequestInit', async () => {
+    expect(
+      getRequestInit(
+        'foo',
+        { fetchRequestInit: { method: 'post' } },
+        { isFontRequest: false },
+      )?.method,
+    ).toBe('post')
+
+    expect(
+      getRequestInit(
+        'foo',
+        {
+          fetchRequestInit: (url) => ({
+            method: url,
+          }),
+        },
+        { isFontRequest: false },
+      )?.method,
+    ).toBe('foo')
   })
 })

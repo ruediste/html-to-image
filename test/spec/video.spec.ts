@@ -35,7 +35,7 @@ describe('work with video element', () => {
     await renderAndCheck()
   })
 
-  fit('should render video element with poster', async () => {
+  it('should render video element with poster', async () => {
     await bootstrap(
       'video/poster.html',
       'video/style.css',

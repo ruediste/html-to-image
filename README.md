@@ -241,6 +241,7 @@ Defaults to `1.0` (`100%`)
 Set to true to set the fetch cache option to 'no-cache'
 
 Defaults to `false`
+
 ### cacheBust
 
 Set to true to append the current time as a query string to URL requests to enable cache busting.
@@ -309,6 +310,28 @@ Defaults to `image/png`
 ### includeStyleProperties
 
 An array of style property names. Can be used to manually specify which style properties are included when cloning nodes. This can be useful for performance-critical scenarios.
+
+### fetchRequestInit
+This option allows to customize the (RequestInit)[https://developer.mozilla.org/en-US/docs/Web/API/RequestInit] used to load resources and fonts. It can either
+be the `RequestInit` directly or a factory method.
+
+```ts
+fetchRequestInit?:
+  | RequestInit
+  | ((url: string, info: FetchRequestInitFactoryInfo) => RequestInit)
+
+interface FetchRequestInitFactoryInfo {  isFontRequest: boolean}
+
+```
+
+For example,
+
+```ts
+htmlToImage.toCanvas(node, {
+  fetchRequestInit: (url: string) =>
+    url.includes('/internal') ? { credentials: 'include' } : undefined,
+})
+```
 
 ## Browsers
 

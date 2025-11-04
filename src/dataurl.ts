@@ -1,4 +1,5 @@
 import { Options } from './types'
+import { getRequestInit } from './util'
 
 function getContentFromDataUrl(dataURL: string) {
   return dataURL.split(/,/)[1]
@@ -74,7 +75,7 @@ async function fetchAndMakeDataURL(
   try {
     const content = await fetchAsDataURL(
       resourceUrl,
-      options.fetchRequestInit,
+      getRequestInit(resourceUrl, options, { isFontRequest: false }),
       ({ res, result }) => {
         if (!contentType) {
           // eslint-disable-next-line no-param-reassign

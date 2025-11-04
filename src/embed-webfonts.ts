@@ -1,7 +1,7 @@
 import { fetchAsDataURL } from './dataurl'
 import { embedResources, shouldEmbed } from './embed-resources'
 import type { Options } from './types'
-import { toArray } from './util'
+import { getRequestInit, toArray } from './util'
 
 interface Metadata {
   url: string
@@ -37,7 +37,7 @@ async function embedFonts(data: Metadata, options: Options): Promise<string> {
 
     return fetchAsDataURL<[string, string]>(
       url,
-      options.fetchFontRequestInit ?? options.fetchRequestInit,
+      getRequestInit(url, options, { isFontRequest: true }),
       ({ result }) => {
         cssText = cssText.replace(loc, `url(${result})`)
         return [loc, result]
