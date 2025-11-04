@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/ruediste/html-to-image/compare/v1.14.0...v1.15.0) (2025-11-04)
+
+
+### Features
+
+* Add Request Init Factory Method ([bf9a493](https://github.com/ruediste/html-to-image/commit/bf9a493c860e8e3f0c2d338cb15d6d1550a6cdf4))
+
 # [1.14.0](https://github.com/ruediste/html-to-image/compare/v1.13.3...v1.14.0) (2025-10-17)
 
 
